@@ -72,6 +72,7 @@ CKEDITOR.plugins.add('dropler', {
 		}
 
 		function dropHandler(e) {
+			console.log('dropHandler', e);
 			e.preventDefault();
 			var file = e.dataTransfer.files[0];
 			backend.upload(file).then(insertImage, orPopError);
@@ -138,7 +139,7 @@ CKEDITOR.plugins.add('dropler', {
 		}
 
 		function uploadBase64(file) {
-			console.log(file);
+			console.log('uploadBase64', file);
 			return new Promise(function (resolve, reject) {
 				var reader = new FileReader();
 				reader.onload = function (a) {
@@ -148,22 +149,25 @@ CKEDITOR.plugins.add('dropler', {
 			});
 		}
 
-		CKEDITOR.on('instanceReady', function () {
-			var iframeBase = document.querySelector('iframe').contentDocument.querySelector('html');
-			var iframeBody = iframeBase.querySelector('body');
+		CKEDITOR.on('instanceReady', function (e) {
+			console.log('CKEDITOR instanceReady', e);
+			/*var iframeBase = document.querySelector('iframe').contentDocument.querySelector('html');
+			 var iframeBody = iframeBase.querySelector('body');*/
+			var iframeBody = e.editor.document.$.body;
 
 			iframeBody.ondragover = doNothing;
 			iframeBody.ondrop = dropHandler;
 
-			paddingToCenterBody = ((iframeBase.offsetWidth - iframeBody.offsetWidth) / 2) + 'px';
-			iframeBase.style.height = '100%';
-			iframeBase.style.width = '100%';
-			iframeBase.style.overflowX = 'hidden';
+			/*paddingToCenterBody = ((iframeBase.offsetWidth - iframeBody.offsetWidth) / 2) + 'px';
+			 iframeBase.style.height = '100%';
+			 iframeBase.style.width = '100%';
+			 iframeBase.style.overflowX = 'hidden';*/
 
+			iframeBody.parentNode.style.height = '100%';
 			iframeBody.style.height = '100%';
-			iframeBody.style.margin = '0';
-			iframeBody.style.paddingLeft = paddingToCenterBody;
-			iframeBody.style.paddingRight = paddingToCenterBody;
+			/*iframeBody.style.margin = '0';
+			 iframeBody.style.paddingLeft = paddingToCenterBody;
+			 iframeBody.style.paddingRight = paddingToCenterBody;*/
 		});
 	}
 });
